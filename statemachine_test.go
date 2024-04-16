@@ -21,24 +21,24 @@ func init() {
 	f = Factory[string, string, any]{}
 
 	b := Builder[string, string, any]{}
-	b.ExternalTransition().From("bar").To("baz").On("hi").Perform(func(from string, to string, event string, context any) {
+	b.ExternalTransition().From("bar").To("baz").On("hi").Perform(func(from string, to string, event string, context *any) {
 		fmt.Printf("from %v ,to %v,on %v\n", from, to, event)
 	})
-	b.ExternalTransition().From("foo").To("bar").On("ping").When(func(ctx any) bool {
+	b.ExternalTransition().From("foo").To("bar").On("ping").When(func(ctx *any) bool {
 		fmt.Println("check true")
 		return true
-	}).Perform(func(from string, to string, event string, context any) {
+	}).Perform(func(from string, to string, event string, context *any) {
 		fmt.Printf("from %v ,to %v,on %v\n", from, to, event)
 	})
-	b.ExternalTransitions().FromAmong("foo", "bar").To("zzz").On("sleep").When(func(ctx any) bool {
+	b.ExternalTransitions().FromAmong("foo", "bar").To("zzz").On("sleep").When(func(ctx *any) bool {
 		return true
-	}).Perform(func(from string, to string, event string, context any) {
+	}).Perform(func(from string, to string, event string, context *any) {
 		fmt.Printf("from %v ,to %v,on %v\n", from, to, event)
 	})
-	b.InternalTransition().Within("foo").On("in").Perform(func(from string, to string, event string, context any) {
+	b.InternalTransition().Within("foo").On("in").Perform(func(from string, to string, event string, context *any) {
 		fmt.Printf("from %v ,to %v,on %v\n", from, to, event)
 	})
-	var fetcher CurrentStateFetcher[string, any] = func(ctx any) string {
+	var fetcher CurrentStateFetcher[string, any] = func(ctx *any) string {
 		return "foo"
 	}
 	b.SetCurrentStateFetcher(fetcher)

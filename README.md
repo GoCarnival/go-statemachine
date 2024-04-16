@@ -21,12 +21,12 @@ import (
 
 func main() {
 	builder := statemachine.Builder[string, string, any]{}
-	builder.ExternalTransition().From("foo").To("bar").On("ping").When(func(ctx any) bool {
+	builder.ExternalTransition().From("foo").To("bar").On("ping").When(func(ctx *any) bool {
 		return true
-	}).Perform(func(from string, to string, event string, context any) {
+	}).Perform(func(from string, to string, event string, context *any) {
 		fmt.Println("do something")
 	})
-	var fetcher statemachine.CurrentStateFetcher[string, any] = func(ctx any) string {
+	var fetcher statemachine.CurrentStateFetcher[string, any] = func(ctx *any) string {
 		return "foo"
 	}
 	builder.SetCurrentStateFetcher(fetcher)

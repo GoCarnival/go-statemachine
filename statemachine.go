@@ -35,7 +35,7 @@ func (s *StateMachine[S, E, C]) Verify(source S, event E) bool {
 }
 
 // VerifyWithFetcher 校验状态机是否可以触发某个事件，当前状态通过 CurrentStateFetcher 获取，需要先在 StateMachine 上配置 CurrentStateFetcher
-func (s *StateMachine[S, E, C]) VerifyWithFetcher(event E, ctx C) bool {
+func (s *StateMachine[S, E, C]) VerifyWithFetcher(event E, ctx *C) bool {
 	s.isReady()
 	if s.currentStateFetcher == nil {
 		log.Fatal("no state fetcher configured")
@@ -46,7 +46,7 @@ func (s *StateMachine[S, E, C]) VerifyWithFetcher(event E, ctx C) bool {
 	return transitions != nil && len(transitions) != 0
 }
 
-func (s *StateMachine[S, E, C]) routeTransition(source S, event E, ctx C) *transition[S, E, C] {
+func (s *StateMachine[S, E, C]) routeTransition(source S, event E, ctx *C) *transition[S, E, C] {
 	sourceState := getState(s.stateMap, source)
 	transitions := sourceState.transitionsOfEvent(event)
 	if transitions == nil || len(transitions) == 0 {
@@ -65,7 +65,7 @@ func (s *StateMachine[S, E, C]) routeTransition(source S, event E, ctx C) *trans
 }
 
 // FireEvent 触发状态机事件
-func (s *StateMachine[S, E, C]) FireEvent(source S, event E, ctx C) (target S) {
+func (s *StateMachine[S, E, C]) FireEvent(source S, event E, ctx *C) (target S) {
 	s.isReady()
 	transition := s.routeTransition(source, event, ctx)
 	if transition == nil {
@@ -76,7 +76,7 @@ func (s *StateMachine[S, E, C]) FireEvent(source S, event E, ctx C) (target S) {
 }
 
 // FireEventByFetcher 触发状态机事件，当前状态通过 CurrentStateFetcher 获取，需要先在 StateMachine 上配置 CurrentStateFetcher
-func (s *StateMachine[S, E, C]) FireEventByFetcher(event E, ctx C) (target S) {
+func (s *StateMachine[S, E, C]) FireEventByFetcher(event E, ctx *C) (target S) {
 	s.isReady()
 	if s.currentStateFetcher == nil {
 		log.Fatal("no state fetcher configured")

@@ -13,10 +13,10 @@ import (
 )
 
 // Action 是状态机规则命中后，执行的业务逻辑
-type Action[S, E comparable, C any] func(from S, to S, event E, context C)
+type Action[S, E comparable, C any] func(from S, to S, event E, context *C)
 
 // Condition 是状态机路由后在执行 Action 之前的前置校验，在配置状态机时可以为空
-type Condition[C any] func(ctx C) bool
+type Condition[C any] func(ctx *C) bool
 
 // TransitionType TransitionType 状态转移类型
 // 当前只有 EXTERNAL 与 INTERNAL 两种
@@ -44,7 +44,7 @@ type transition[S, E comparable, C any] struct {
 }
 
 // transit Do transition from source state to target state.
-func (t *transition[S, E, C]) transit(ctx C, checkCondition bool) state[S, E, C] {
+func (t *transition[S, E, C]) transit(ctx *C, checkCondition bool) state[S, E, C] {
 	log.Debugf("Do t: %s\n", t.String())
 	err := t.verify()
 	if err != nil {
@@ -121,7 +121,7 @@ func (s *state[S, E, C]) allTransitions() []*transition[S, E, C] {
 	return s.transitions().allTransitions()
 }
 
-type CurrentStateFetcher[S comparable, C any] func(ctx C) S
+type CurrentStateFetcher[S comparable, C any] func(ctx *C) S
 
 type eventTransitions[S, E comparable, C any] struct {
 	transitions map[E][]*transition[S, E, C]
@@ -312,16 +312,16 @@ func (tb *transitionsBuilder[S, E, C]) When(condition Condition[C]) whenInterfac
 }
 
 type FailCallbackInterface[S, E comparable, C any] interface {
-	OnFail(source S, event E, ctx C)
+	OnFail(source S, event E, ctx *C)
 }
 type NumbFailCallback[S, E comparable, C any] struct{}
 
-func (n *NumbFailCallback[S, E, C]) OnFail(source S, event E, ctx C) {
+func (n *NumbFailCallback[S, E, C]) OnFail(source S, event E, ctx *C) {
 	//do nothing
 }
 
 type AlertFailCallback[S, E comparable, C any] struct{}
 
-func (a *AlertFailCallback[S, E, C]) OnFail(source S, event E, ctx C) {
+func (a *AlertFailCallback[S, E, C]) OnFail(source S, event E, ctx *C) {
 	log.Fatalf("Cannot fire event [%v] on current state [%v] with context [%v]\n", event, source, ctx)
 }
