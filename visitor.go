@@ -8,8 +8,9 @@ package statemachine
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Visitable[S, E comparable, C any] interface {

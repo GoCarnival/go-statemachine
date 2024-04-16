@@ -8,6 +8,7 @@ package statemachine
 
 import (
 	"fmt"
+
 	"github.com/samber/lo"
 )
 

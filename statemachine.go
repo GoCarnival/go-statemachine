@@ -7,8 +7,9 @@
 package statemachine
 
 import (
-	log "github.com/sirupsen/logrus"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // StateMachine the state machine
