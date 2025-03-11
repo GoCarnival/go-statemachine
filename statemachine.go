@@ -76,8 +76,8 @@ func (s *StateMachine[S, E, C]) FireEvent(source S, event E, ctx *C) (target S) 
 	return transition.transit(ctx, false).id
 }
 
-// FireEventByFetcher 触发状态机事件，当前状态通过 CurrentStateFetcher 获取，需要先在 StateMachine 上配置 CurrentStateFetcher
-func (s *StateMachine[S, E, C]) FireEventByFetcher(event E, ctx *C) (target S) {
+// FireEventWithFetcher 触发状态机事件，当前状态通过 CurrentStateFetcher 获取，需要先在 StateMachine 上配置 CurrentStateFetcher
+func (s *StateMachine[S, E, C]) FireEventWithFetcher(event E, ctx *C) (target S) {
 	s.isReady()
 	if s.currentStateFetcher == nil {
 		log.Fatal("no state fetcher configured")
@@ -89,6 +89,12 @@ func (s *StateMachine[S, E, C]) FireEventByFetcher(event E, ctx *C) (target S) {
 		return source
 	}
 	return transition.transit(ctx, false).id
+}
+
+// FireEventByFetcher 触发状态机事件，当前状态通过 CurrentStateFetcher 获取，需要先在 StateMachine 上配置 CurrentStateFetcher
+// Deprecated: use FireEventWithFetcher instead
+func (s *StateMachine[S, E, C]) FireEventByFetcher(event E, ctx *C) (target S) {
+	return s.FireEventWithFetcher(event, ctx)
 }
 
 func (s *StateMachine[S, E, C]) Accept(v VisitorInterface[S, E, C]) string {
