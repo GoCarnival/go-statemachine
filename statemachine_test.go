@@ -66,7 +66,7 @@ func TestFireEvent(t *testing.T) {
 	is.Equal("zzz", target)
 	target = statemachine.FireEvent("bar", "sleep", nil)
 	is.Equal("zzz", target)
-	target = statemachine.FireEventByFetcher("ping", nil)
+	target = statemachine.FireEventWithFetcher("ping", nil)
 	is.Equal("bar", target)
 }
 
